@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Of Hanoi</title>
+    <style>
+        body{
+            background-color: rgb(143, 215, 239);
+        }
+        #container-box{
+            background-color: white;
+            border: 1px solid;
+            width: 350px;
+            border-radius: 20px;
+            margin: auto;
+            margin-top: 120px;
+            box-shadow:0px 0px 30px 12px rgb(203, 166, 192) ;
+        }
+
+        #noOfDiscs {
+            outline: none;
+        }
+
+        #secs {
+            width: 304px;
+            /* rotate: 180deg; */
+            /* margin-top: 100px; */
+            margin-left: 23px;
+        }
+
+        .backSecs {
+            display: grid;
+            grid-template-columns: repeat(3, 0fr);
+        }
+
+        .backSec {
+            height: 100px;
+            width: 100px;
+            border: 1px solid;
+            border-bottom: 5px solid;
+        }
+
+        .rod {
+            position: relative;
+            right: -0.3px;
+            background-color: black;
+            height: 90px;
+            width: 3px;
+            margin: auto;
+            margin-top: 10px;
+        }
+
+        .mainSecs {
+            position: relative;
+            bottom: 105px;
+            rotate: 180deg;
+            display: grid;
+            grid-template-columns: repeat(3, 0fr);
+        }
+
+        .mainSec {
+            /* background-color: aquamarine; */
+            height: 100px;
+            width: 100px;
+            border: 1px solid;
+        }
+
+        .discs {
+            /* position: relative;
+            bottom: 18.5px; */
+            border: 1px solid;
+            border-radius: 5px;
+            height: 7.5px;
+            margin: auto;
+            background-color: white;
+        }
+        
+        .headerInfo{
+            position: relative;
+            top: 40px;
+            left: 40px;
+        }
+
+        .footerInfo{
+            position: relative;
+            top: 200px;
+            left: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container-box">
+        <label class="headerInfo" for="noOfDiscs">No.of Discs:
+            <select name="" id="noOfDiscs" onchange="initializeDiscs()">
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <label for="noOfMoves" style="margin-left: 80px;">Moves: <span id="noOfMoves">1023</span></label>
+        </label>
+        <p class="footerInfo">Minimum Moves: <span id="minMoves"></span></p>
+        <div id="secs">
+            <br>
+            <div class="backSecs">
+                <div class="backSec">
+                    <div class="rod"></div>
+                </div>
+                <div class="backSec">
+                    <div class="rod"></div>
+                </div>
+                <div class="backSec">
+                    <div class="rod"></div>
+                </div>
+            </div>
+            <div class="mainSecs">
+                <div class="mainSec" id="sec3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                <div class="mainSec" id="sec2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                <div class="mainSec" id="sec1" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <!-- Dynamic discs append here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        window.receiveValue;
+        window.transferValue;
+        function allowDrop(ev) {
+            // if (document.getElementById('inp').value == '1') {
+            ev.preventDefault();
+            // // console.log('***********');
+
+            // }
+        }
+
+        function drop(ev) {
+            try {
+                // console.log(ev)
+                let src = document.getElementById(ev.srcElement.id).children;
+                receiveValue = parseInt(src[src.length - 1].outerHTML.split('"')[1]);
+            } catch (e) {
+                receiveValue = 1000;
+                // console.log('Err= ' + e + receiveValue);
+            }
+            if (receiveValue > transferValue) {
+                ev.preventDefault();
+                // // console.log(event.target.value);
+                var data = ev.dataTransfer.getData("text");
+                ev.target.appendChild(document.getElementById(data));
+                // let moves = document.getElementById('noOfMoves').textContent;
+                // moves = parseInt(moves)+1
+                document.getElementById('noOfMoves').textContent = parseInt(document.getElementById('noOfMoves').textContent) + 1;
+                // console.log(noOfMoves)
+                // console.log(receiveValue);
+                for (let j = 1; j <= 3; j++) {
+                    // console.log('$$$$$$$$$$$$');
+                    // reInitialize(document.getElementById('sec' + i));
+                    var doc = document.getElementById('sec' + j);
+                    try {
+                        for (let i = 0; i < doc.children.length - 1; i++) {
+                            // doc.children[i].addEventListener('dragstart', (ev) => {
+                            //     temp.style.cursor = 'default';
+                            //     temp.setAttribute('draggable', 'false');
+                            //     // // console.log(ev);
+                            //     // console.log(ev);
+                            //     // console.log('Hello');
+                            // });
+                            // console.log('noDraggable: ' + doc.children[i].id)
+                            noDraggable(doc.children[i]);
+                        }
+                        // console.log('draggable: ' + doc.lastChild.id)
+                        draggable(doc.lastChild);
+                        // console.log('^^^^^^^^^');
+                    } catch (e) { }
+                }
+            }
+            else {
+                // console.log('??????????????');
+            }
+
+
+            if (document.getElementById('sec3').children.length == noOfDiscs) {
+                setTimeout(() => {
+                    // console.log('Game Over!!!');
+                    let moves = parseInt(document.getElementById('noOfMoves').textContent);
+                    if (confirm(`Level Passed with ${document.getElementById('noOfMoves').textContent} Move${(moves != 1)?'s':''}, Wanna Try Next Level?`)) {
+                        console.log(document.getElementById('noOfDiscs').value)
+                        if(document.getElementById('noOfDiscs').value < 10){
+                            document.getElementById('noOfDiscs').value = noOfDiscs + 1;
+                            initializeDiscs();
+                        }
+                        else{
+                            alert('You Are Out Of Scope');
+                        }
+                        // console.log('Restart')
+                        // console.log(prompt('Enter something'));
+                    }
+                }, (1));
+            }
+            // console.log('!!!!!!!!!!!!!!!!');
+
+
+            // alert(src[src.length-1].value);
+            // write function here
+        }
+
+        function reInitialize(doc) {
+            // // console.log(doc.children);
+            // for (let i = 0; i < doc.children.length; i++) {
+            //     // doc.children[i].addEventListener('dragstart', (ev) => {
+            //     //     temp.style.cursor = 'default';
+            //     //     temp.setAttribute('draggable', 'false');
+            //     //     // // console.log(ev);
+            //     //     // console.log(ev);
+            //     //     // console.log('Hello');
+            //     // });
+            //     // console.log(doc.children[i])
+            //     noDraggable(doc.children[i]);
+            // }
+            // // console.log(doc.lastChild)
+            // draggable(doc.lastChild);
+            // // console.log('^^^^^^^^^');
+        }
+
+        function noDraggable(temp) {
+            temp.style.cursor = 'default';
+            temp.setAttribute('draggable', 'false');
+            temp.addEventListener('dragstart', (ev) => {
+                ev.dataTransfer.setData("text", '');
+                // console.log('Hello');
+            });
+            // console.log('###########')
+            // console.log(temp);
+        }
+
+        function draggable(temp1) {
+            temp1.style.cursor = 'pointer';
+            temp1.setAttribute('draggable', 'true');
+            temp1.addEventListener('dragstart', (ev) => {
+                ev.dataTransfer.setData("text", ev.target.id);
+                // console.log('++++++++++++++');
+                transferValue = parseInt(document.getElementById(ev.srcElement.id).outerHTML.split('"')[1]);
+                // console.log(ev.srcElement.id);
+            });
+        }
+
+
+        function dragStart() {
+            // console.log('-------------');
+            let temp;
+            for (let i = 1; i <= noOfDiscs; i++) {
+                temp = document.getElementById('disc' + i);
+                if (i == 1) {
+                    temp.style.cursor = 'pointer';
+                    temp.setAttribute('draggable', 'true');
+                    temp.addEventListener('dragstart', (ev) => {
+                        ev.dataTransfer.setData("text", ev.target.id);
+                        // console.log('++++++++++++++');
+                        transferValue = parseInt(document.getElementById(ev.srcElement.id).outerHTML.split('"')[1]);
+                        // console.log(transferValue);
+                    });
+                    continue;
+                }
+                temp.style.cursor = 'default';
+                temp.setAttribute('draggable', 'false');
+                // temp.addEventListener('dragstart', () => {
+                //     // console.log('Hellooooooooooooo');
+                //     // console.log(temp.draggable == 'false');
+                // });
+            }
+
+            // document.getElementById('disc1').ondragstart = (ev) => {
+            //     // console.log('Hiiiii');
+            //     // console.log(event);
+            //     ev.dataTransfer.setData("text", ev.target.id);
+            // }
+        }
+
+
+        window.load = initializeDiscs();
+        function initializeDiscs() {
+            document.getElementById('noOfMoves').textContent = 0;
+            window.noOfDiscs = parseInt(document.getElementById('noOfDiscs').value);
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('sec' + i).innerHTML = '';
+            }
+
+            let minMoves = 0;
+            for(let i = 1 ; i <= noOfDiscs ; i++){
+                minMoves = minMoves*2 + 1;
+            }
+            document.getElementById('minMoves').textContent = minMoves;
+            let wid = (10 - 2) * noOfDiscs;
+            let disc = document.getElementById('sec1');
+            for (let i = noOfDiscs; i > 0; i--) {
+                disc.append(document.createElement('p'));
+                disc.lastChild.setAttribute('value', i);
+                disc.lastChild.setAttribute('id', 'disc' + i);
+                disc.lastChild.setAttribute('class', 'discs');
+                disc.lastChild.style.width = wid + 'px';
+                // // console.log(disc.lastChild)
+                wid -= 8;
+            }
+            dragStart()
+            // temp = disc.lastChild
+            // temp.style.cursor = 'pointer';
+            // temp.setAttribute('draggable', 'false');
+            // temp.addEventListener('dragstart', () => {
+            //     // console.log('***********');
+            // })
+        }
+    </script>
+</body>
+
+</html>
