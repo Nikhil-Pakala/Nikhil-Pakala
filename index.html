@@ -180,10 +180,10 @@
 
             if (document.getElementById('sec3').children.length == noOfDiscs) {
                 setTimeout(() => {
-                    // console.log('Game Over!!!');
+                    console.log('Game Over!!!');
                     let moves = parseInt(document.getElementById('noOfMoves').textContent);
                     if (confirm(`Level Passed with ${document.getElementById('noOfMoves').textContent} Move${(moves != 1)?'s':''}, Wanna Try Next Level?`)) {
-                        console.log(document.getElementById('noOfDiscs').value)
+                        // console.log(document.getElementById('noOfDiscs').value)
                         if(document.getElementById('noOfDiscs').value < 10){
                             document.getElementById('noOfDiscs').value = noOfDiscs + 1;
                             initializeDiscs();
